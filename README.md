@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Intelligent Timetable Generator
 
 A full-stack college timetable management and generation system for multiple divisions, subjects, faculty members, classrooms and periods.
@@ -67,3 +68,6 @@ Frontend: http://localhost:5173
 The generator expands each subject into required weekly sessions and schedules the most constrained session first. It uses backtracking with forward checking. A candidate slot is accepted only when all hard constraints pass.
 
 If no complete assignment exists, the API returns HTTP 422 with conflict diagnostics instead of producing an invalid timetable.
+=======
+# intelligent-timetable-generator
+>>>>>>> 2de516323acbb7b49233ede921e09b20c61163bf
