@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Division {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  year        Int
+  studentCount Int
+  sessions    Timetable[]
+  subjects    DivisionSubject[]
+}
+
+model Faculty {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  email       String?
+  available   FacultyAvailability[]
+  subjects    Subject[]
+  sessions    Timetable[]
+}
+
+model Room {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  capacity    Int
+  type        String
+  sessions    Timetable[]
+}
+
+model Subject {
+  id            Int          @id @default(autoincrement())
+  code          String       @unique
+  name          String
+  weeklyPeriods Int
+  duration      Int          @default(1)
+  roomType      String       @default("CLASSROOM")
+  facultyId     Int
+  faculty       Faculty      @relation(fields: [facultyId], references: [id])
+  divisions     DivisionSubject[]
+  sessions      Timetable[]
+}
+
+model DivisionSubject {
+  divisionId Int
+  subjectId Int
+  division   Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  @@id([divisionId, subjectId])
+}
+
+model FacultyAvailability {
+  id        Int      @id @default(autoincrement())
+  facultyId Int
+  day       Int
+  period    Int
+  available Boolean  @default(true)
+  faculty   Faculty  @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  @@unique([facultyId, day, period])
+}
+
+model Timetable {
+  id         Int      @id @default(autoincrement())
+  day        Int
+  period     Int
+  divisionId Int
+  subjectId  Int
+  facultyId  Int
+  roomId     Int
+  duration   Int      @default(1)
+  division   Division @relation(fields: [divisionId], references: [id])
+  subject    Subject  @relation(fields: [subjectId], references: [id])
+  faculty    Faculty  @relation(fields: [facultyId], references: [id])
+  room       Room     @relation(fields: [roomId], references: [id])
+  @@unique([day, period, divisionId])
+  @@unique([day, period, facultyId])
+  @@unique([day, period, roomId])
+}
